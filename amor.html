@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Escolhas ❤️</title>
+
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600&display=swap" rel="stylesheet">
+
+  <style>
+    body {
+      margin: 0;
+      background: radial-gradient(circle at center, #111, #000);
+      color: #f5f5f5;
+      font-family: 'Cinzel', serif;
+      height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+      overflow: hidden;
+    }
+
+    body::after {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background: url('https://grainy-gradients.vercel.app/noise.svg');
+      opacity: 0.05;
+      pointer-events: none;
+    }
+
+    .screen {
+      display: none;
+      flex-direction: column;
+      gap: 26px;
+      max-width: 640px;
+      padding: 30px;
+      animation: fade 0.7s ease;
+    }
+
+    .screen.active { display: flex; }
+
+    @keyframes fade {
+      from { opacity: 0; transform: scale(0.96); }
+      to { opacity: 1; transform: scale(1); }
+    }
+
+    p {
+      font-size: 1.35em;
+      line-height: 1.6em;
+      text-shadow: 0 0 12px rgba(255,255,255,0.15);
+    }
+
+    button {
+      padding: 14px 42px;
+      font-size: 1em;
+      font-family: 'Cinzel', serif;
+      background: transparent;
+      border-radius: 40px;
+      cursor: pointer;
+      transition: all 0.4s ease;
+      letter-spacing: 1px;
+    }
+
+    .yes {
+      border: 1px solid rgba(255,255,255,0.9);
+      color: white;
+      box-shadow: 0 0 25px rgba(255,255,255,0.35);
+    }
+
+    .no {
+      border: 1px solid rgba(255,255,255,0.3);
+      color: rgba(255,255,255,0.6);
+    }
+
+    .hover-glow:hover {
+      box-shadow: 0 0 35px rgba(255,255,255,0.6);
+      transform: scale(1.05);
+    }
+
+    .error {
+      color: #ff7675;
+      animation: shake 0.4s;
+    }
+
+    @keyframes shake {
+      0% { transform: translateX(0); }
+      25% { transform: translateX(-6px); }
+      50% { transform: translateX(6px); }
+      75% { transform: translateX(-6px); }
+      100% { transform: translateX(0); }
+    }
+
+    .ring {
+      font-size: 5em;
+      animation: ring 2s ease-in-out infinite;
+      margin-bottom: 10px;
+    }
+
+    @keyframes ring {
+      0%,100% { transform: rotate(0) scale(1); }
+      50% { transform: rotate(8deg) scale(1.15); }
+    }
+
+    .happy {
+      background: radial-gradient(circle at center, #ffeaa7, #000);
+      color: #111;
+      border-radius: 20px;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- TELA 1 -->
+  <div class="screen active" id="s1">
+    <p>Aceita cumprir a penitência de ficar o resto da vida comigo?</p>
+    <button class="yes hover-glow" onclick="firstChoice(true)">Sim</button>
+    <button class="no" onclick="firstChoice(false)">Não</button>
+  </div>
+
+  <!-- MENSAGEM 1 -->
+  <div class="screen" id="msg1">
+    <p class="error">Mas somos feitos um para o outro amor, vou perguntar de novo?</p>
+  </div>
+
+  <!-- TELA 2 -->
+  <div class="screen" id="s2">
+    <p>Você foi obrigada a escolher isso?</p>
+    <button class="yes" onclick="forcedChoice(true)">Sim</button>
+    <button class="no hover-glow" onclick="forcedChoice(false)">Não</button>
+  </div>
+
+  <!-- MENSAGEM 2 -->
+  <div class="screen" id="msg2">
+    <p class="error">Um relacionamento não pode ser forçado amor, vou perguntar de novo</p>
+  </div>
+
+  <!-- TELA 3 -->
+  <div class="screen" id="s3">
+    <p>Te ganhei pelo cansaço?</p>
+    <button class="yes hover-glow" onclick="tiredChoice(true)">Sim</button>
+    <button class="no hover-glow" onclick="tiredChoice(false)">Não</button>
+  </div>
+
+  <!-- CANSADA -->
+  <div class="screen" id="tired">
+    <p class="error">Odozinha tá cansada, depois eu faço uma massagem em você amor, mas até lá, pode voltar</p>
+  </div>
+
+  <!-- TELA 4 -->
+  <div class="screen" id="s4">
+    <p>Sério mesmo amor?</p>
+    <button class="yes hover-glow" onclick="seriousChoice(true)">Sim</button>
+    <button class="no hover-glow" onclick="seriousChoice(false)">Não</button>
+  </div>
+
+  <!-- FINAL FELIZ -->
+  <div class="screen happy" id="happy">
+    <div class="ring">💍</div>
+    <p><strong>Parabéns, você acaba de ganhar o castigo de ser imensamente feliz comigo pelo resto da sua vida, pacto selado, num tem mais como voltar atrás, beijo amor</strong></p>
+  </div>
+
+  <!-- ERRO FINAL -->
+  <div class="screen" id="lie">
+    <p class="error">Não pode mentira no relacionamento, faz de novo!</p>
+  </div>
+
+<script>
+  let tiredAnswer = null;
+
+  function show(id, delay = 0) {
+    setTimeout(() => {
+      document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+      document.getElementById(id).classList.add('active');
+    }, delay);
+  }
+
+  function firstChoice(answer) {
+    if (!answer) {
+      show('msg1');
+      setTimeout(() => show('s1'), 2200);
+    } else show('s2');
+  }
+
+  function forcedChoice(answer) {
+    if (answer) {
+      show('msg2');
+      setTimeout(() => show('s1'), 2200);
+    } else show('s3');
+  }
+
+  function tiredChoice(answer) {
+    if (answer) {
+      show('tired');
+      setTimeout(() => show('s1'), 3000);
+    } else {
+      tiredAnswer = false;
+      show('s4');
+    }
+  }
+
+  function seriousChoice(answer) {
+    if (tiredAnswer === false && answer === true) {
+      show('happy');
+    } else {
+      show('lie');
+      setTimeout(() => show('s1'), 2500);
+    }
+  }
+</script>
+
+</body>
+</html>
