@@ -1,0 +1,31 @@
+{
+  "version": "0.1.0",
+  "version_code": 1,
+  "android_package": "com.livria.app",
+  "android_min_sdk": 24,
+  "android_target_sdk": 36,
+  "apk_signature": "Android debug, v2 signature verified with apksigner",
+  "installed_on_device": false,
+  "github_actions_executed": false,
+  "github_pages_published": false,
+  "web_assets_matched_in_apk": 32,
+  "apk_bytes": 5482229,
+  "apk_sha256": "36803edf5372e38ce19ad43675094b0a15bccb28a7fcb5f559a8153ca53270ba",
+  "unit_tests_passed": 11,
+  "live_scenarios_passed": 18,
+  "extended_scenarios_passed": 6,
+  "transaction_sql_checks": {
+    "minimal_private_directory_card": true,
+    "signup_display_name": true,
+    "authorized_moderation": true
+  },
+  "production_dependency_audit": {
+    "info": 0,
+    "low": 0,
+    "moderate": 0,
+    "high": 0,
+    "critical": 0,
+    "total": 0
+  },
+  "generated_at": "2026-11-10T14:41:58.341761+00:00"
+}

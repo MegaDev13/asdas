@@ -1,0 +1,77 @@
+{
+  "executed_at": "2026-11-10T14:01:29.448Z",
+  "tests": [
+    {
+      "name": "Real password authentication for three QA accounts",
+      "passed": true
+    },
+    {
+      "name": "Profile edit persists",
+      "passed": true
+    },
+    {
+      "name": "Private settings inaccessible to another account",
+      "passed": true
+    },
+    {
+      "name": "Cannot self-promote to administrator",
+      "passed": true
+    },
+    {
+      "name": "Protected PDF upload and server-side validation",
+      "passed": true
+    },
+    {
+      "name": "Private PDF and metadata cannot be accessed by outsiders",
+      "passed": true
+    },
+    {
+      "name": "Authorized PDF download returns PDF bytes",
+      "passed": true
+    },
+    {
+      "name": "Bookmarks, notes and normalized highlights persist privately",
+      "passed": true
+    },
+    {
+      "name": "Reading progress refuses stale device overwrites",
+      "passed": true
+    },
+    {
+      "name": "Reading metrics aggregate actual events and reject repeated bursts",
+      "passed": true
+    },
+    {
+      "name": "Direct conversation is atomic and private",
+      "passed": true
+    },
+    {
+      "name": "Messages delivered through actual Realtime",
+      "passed": true
+    },
+    {
+      "name": "Message history survives a fresh client session",
+      "passed": true
+    },
+    {
+      "name": "Third party cannot read or forge private messages",
+      "passed": true
+    },
+    {
+      "name": "Public club join and real club chat work",
+      "passed": true
+    },
+    {
+      "name": "Social post, reaction and comment persist",
+      "passed": true
+    },
+    {
+      "name": "Blocking prevents new direct interactions",
+      "passed": true
+    },
+    {
+      "name": "Account export returns only requester personal rows",
+      "passed": true
+    }
+  ]
+}

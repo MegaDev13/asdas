@@ -1,0 +1,29 @@
+{
+  "executed_at": "2026-11-10T14:30:44.137Z",
+  "tests": [
+    {
+      "name": "Private profile and photo require approved following",
+      "passed": true
+    },
+    {
+      "name": "Invalid PDF cannot be finalized or read",
+      "passed": true
+    },
+    {
+      "name": "Private club invite accepted only by named recipient",
+      "passed": true
+    },
+    {
+      "name": "Private typing broadcast reaches conversation participant",
+      "passed": true
+    },
+    {
+      "name": "Unrelated account denied private typing channel",
+      "passed": true
+    },
+    {
+      "name": "Server-side account deletion cleans QA records and revokes access",
+      "passed": true
+    }
+  ]
+}

@@ -1,0 +1,53 @@
+name: LIVRIA - APK Android
+on:
+  push:
+    branches: ['livria/**']
+    paths: ['livria/src/**', 'livria/public/**', 'livria/android/**', 'livria/package*.json', 'livria/capacitor.config.ts', 'livria/vite.config.ts', 'livria/scripts/**', '.github/workflows/livria-android.yml']
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: livria-android-${{ github.ref }}
+  cancel-in-progress: true
+jobs:
+  android:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    defaults:
+      run:
+        working-directory: livria
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7
+        with:
+          node-version: 24
+          cache: npm
+          cache-dependency-path: livria/package-lock.json
+      - uses: actions/setup-java@b6effb05e454b25005698d916606bdc6ffcbf961 # v5
+        with:
+          distribution: temurin
+          java-version: 21
+      - uses: android-actions/setup-android@v3
+      - run: sdkmanager 'platforms;android-36' 'build-tools;36.0.0'
+      - run: npm ci
+      - run: npm test
+      - run: npm run build
+      - run: npx cap sync android
+      - name: Compile and verify development APK
+        working-directory: livria/android
+        run: |
+          chmod +x gradlew
+          ./gradlew assembleDebug --no-daemon
+          test -s app/build/outputs/apk/debug/app-debug.apk
+          "$ANDROID_HOME/build-tools/36.0.0/apksigner" verify --verbose app/build/outputs/apk/debug/app-debug.apk
+      - name: Prepare download
+        run: |
+          mkdir -p artifacts
+          cp android/app/build/outputs/apk/debug/app-debug.apk artifacts/LIVRIA-0.1.0-debug.apk
+          sha256sum artifacts/LIVRIA-0.1.0-debug.apk > artifacts/SHA256SUMS.txt
+      - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7
+        with:
+          name: LIVRIA-Android-${{ github.run_number }}
+          path: livria/artifacts
+          if-no-files-found: error
+          retention-days: 30

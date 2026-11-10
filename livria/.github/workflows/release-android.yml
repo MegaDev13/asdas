@@ -1,0 +1,50 @@
+name: Prepare signed Android release draft
+on:
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: Version tag already present in source (e.g. v0.1.0)
+        required: true
+        type: string
+permissions:
+  contents: write
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: 21
+      - uses: android-actions/setup-android@v3
+      - run: sdkmanager 'platforms;android-36' 'build-tools;36.0.0'
+      - run: npm ci
+      - run: npm test
+      - run: npm run build
+      - run: npx cap sync android
+      - name: Compile signed release
+        working-directory: android
+        env:
+          KEYSTORE_BASE64: ${{ secrets.ANDROID_KEYSTORE_BASE64 }}
+          LIVRIA_KEYSTORE: ${{ runner.temp }}/release.jks
+          LIVRIA_STORE_PASSWORD: ${{ secrets.ANDROID_STORE_PASSWORD }}
+          LIVRIA_KEY_ALIAS: ${{ secrets.ANDROID_KEY_ALIAS }}
+          LIVRIA_KEY_PASSWORD: ${{ secrets.ANDROID_KEY_PASSWORD }}
+        run: |
+          test -n "$KEYSTORE_BASE64"
+          test -n "$LIVRIA_STORE_PASSWORD"
+          printf '%s' "$KEYSTORE_BASE64" | base64 --decode > "$LIVRIA_KEYSTORE"
+          chmod +x gradlew
+          ./gradlew assembleRelease --no-daemon
+          test -s app/build/outputs/apk/release/app-release.apk
+      - name: Create reviewable draft
+        env:
+          GH_TOKEN: ${{ github.token }}
+          TAG: ${{ inputs.tag }}
+        run: |
+          gh release create "$TAG" android/app/build/outputs/apk/release/app-release.apk --draft --generate-notes --title "LIVRIA $TAG"
