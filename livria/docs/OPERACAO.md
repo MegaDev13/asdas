@@ -27,7 +27,7 @@ O `verify_jwt=false` dessas funções não significa acesso anônimo: ambas exig
 
 Em Authentication → URL Configuration, defina o site real e os URLs de redirecionamento permitidos. Para desenvolvimento, use `http://localhost:5173`. Para GitHub Pages, inclua a origem e o caminho reais do repositório. Configure o retorno de recuperação para a rota `#/nova-senha` e confirme o fluxo com um e-mail sob seu controle.
 
-Não há URL público de produção nesta entrega. Nenhum SMTP próprio foi configurado; verifique também as restrições do envio padrão antes de abrir cadastros para outras pessoas. O cadastro depende de confirmação por e-mail conforme a configuração do Auth. Login por senha foi validado com contas temporárias confirmadas; não foi verificada a entrega de e-mails. A integração de retorno de links de e-mail diretamente para o aplicativo Android ainda está pendente. Depois de confirmar o e-mail, o usuário pode voltar ao aplicativo e entrar por senha.
+A prévia pública está disponível em `https://megadev13.github.io/asdas/livria/`. O Site URL e os redirecionamentos do Auth ainda precisam ser configurados e testados com esse endereço. Nenhum SMTP próprio foi configurado; verifique também as restrições do envio padrão antes de abrir cadastros para outras pessoas. O cadastro depende de confirmação por e-mail conforme a configuração do Auth. Login por senha foi validado com contas temporárias confirmadas; não foi verificada a entrega de e-mails. A integração de retorno de links de e-mail diretamente para o aplicativo Android ainda está pendente. Depois de confirmar o e-mail, o usuário pode voltar ao aplicativo e entrar por senha.
 
 Uma consulta intermediária do auditor Supabase indicou **Leaked Password Protection Disabled**; a consulta final retornou lista vazia. Confirme a configuração no painel Auth antes de produção e ative a proteção quando disponível no plano utilizado. Não houve contratação de plano pago. Consulte a [documentação de segurança de senhas](https://supabase.com/docs/guides/auth/password-security#password-strength-and-leaked-password-protection).
 
@@ -57,7 +57,7 @@ Não use campos editáveis de perfil ou `user_metadata` para conceder acesso. A 
 
 ## GitHub
 
-O proprietário autorizou uma branch em repositório existente. A LIVRIA usa `MegaDev13/asdas`, branch `livria/desenvolvimento`, com a fonte na pasta `livria/`. O arquivo anterior `amor.html` e a branch `main` permanecem preservados. Há uma configuração de Pages existente, que não será substituída sem aprovação específica.
+O proprietário autorizou uma branch em repositório existente. A LIVRIA usa `MegaDev13/asdas`, branch `livria/desenvolvimento`, com a fonte na pasta `livria/`. O arquivo anterior `amor.html` e a branch `main` permanecem preservados. A primeira publicação foi autorizada pelo proprietário em 10/11/2026. A origem do Pages foi alterada para GitHub Actions, mantendo o conteúdo de `amor.html` no artefato publicado.
 
 Os workflows ativos são os arquivos `livria-*.yml` da raiz do repositório. Os workflows dentro de `livria/.github/workflows` são exemplos para uma futura extração do projeto.
 
@@ -76,9 +76,13 @@ O exemplo de workflow de release, dentro de `livria/.github/workflows`, permite 
 
 ## Pages e aprovação de publicação
 
-O workflow ativo `.github/workflows/livria-pages.yml`, na raiz do repositório, publica somente a partir da branch `livria/publicacao`. Essa branch ainda não foi criada: a primeira publicação pública depende de aprovação explícita do proprietário. O workflow reúne a LIVRIA no caminho `/livria/` e preserva `amor.html` na raiz. A configuração de Pages e eventuais restrições do ambiente também precisam permitir a publicação por Actions. O exemplo standalone `Publish GitHub Pages (approved)`, dentro de `livria/.github/workflows`, é manual. Ele exige `approve_publication=true`, compila com a base correta do repositório e utiliza a implantação oficial do GitHub Pages. Configure Settings → Pages → Source → GitHub Actions. A disponibilidade de Pages em repositórios privados depende do plano GitHub; não mude a visibilidade do código sem decisão do proprietário.
+A prévia foi publicada com aprovação do proprietário em 10/11/2026 e verificada no navegador: [LIVRIA](https://megadev13.github.io/asdas/livria/). A página anterior continua acessível em [amor.html](https://megadev13.github.io/asdas/amor.html). O conteúdo de `amor.html` e a branch `main` permanecem inalterados.
 
-Ao adaptar Pages para este repositório, a LIVRIA deve ocupar um caminho próprio e preservar os arquivos do site anterior. A primeira publicação exige aprovação específica; não se deve trocar o conteúdo do site existente automaticamente. Não houve primeira publicação nesta execução, conforme a restrição do prompt mestre. Uma eventual URL deve ser obtida do resultado real do workflow, nunca presumida.
+O workflow ativo `.github/workflows/livria-pages.yml` publica a partir da branch `livria/publicacao`, executa 11 testes e compila a aplicação antes de reunir a LIVRIA em `/livria/` e `amor.html` na raiz. Settings → Pages → Source está definido como GitHub Actions. O ambiente `github-pages` permite especificamente `main` e `livria/publicacao`, sem curingas e sem segredos de ambiente.
+
+A primeira tentativa foi recusada pela regra antiga que permitia somente `main`. Após adicionar a branch de publicação e ajustar a origem do Pages, a tentativa 2 do [run 42860422485](https://github.com/MegaDev13/asdas/actions/runs/42860422485) concluiu com sucesso no commit `3c7f6ba245685cf2ac581da56ed36bc7cb91faeb`. O endereço foi obtido do resultado real do workflow e conferido em sessão pública.
+
+O exemplo standalone `Publish GitHub Pages (approved)`, dentro de `livria/.github/workflows`, continua destinado à extração futura do projeto. Não mude a visibilidade do repositório ou publique conteúdo de outras áreas sem autorização.
 
 ## Releases e manifesto de atualizações
 

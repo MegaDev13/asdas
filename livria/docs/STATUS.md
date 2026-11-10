@@ -73,7 +73,7 @@ O primeiro run Android falhou porque `setup-android@v3` solicitava o pacote remo
 | GitHub MegaDev13 | Conectado para consultar/trabalhar em repositórios existentes |
 | Repositório LIVRIA | Fonte isolada em `MegaDev13/asdas`, pasta `livria/`, branch `livria/desenvolvimento`, conforme autorização posterior |
 | Push e execução dos workflows | Concluídos: Web e Android passaram; evidências em `GITHUB-ACTIONS.json` |
-| GitHub Pages público | Não publicado; primeira publicação depende da aprovação pedida no prompt mestre |
+| GitHub Pages público | Prévia publicada com aprovação em 10/11/2026: https://megadev13.github.io/asdas/livria/; 11 testes e build aprovados no run `42860422485`, tentativa 2 |
 | APK | Compilado no GitHub Actions, assinatura e artefatos baixados verificados; continua como debug de avaliação |
 | Assinatura de produção | Pipeline preparado; faltam chave estável e Secrets do proprietário |
 | E-mail de confirmação/recuperação | Código preparado; falta URL final de Auth e teste real de entrega/retorno |
@@ -100,4 +100,4 @@ O nome e o nome de usuário aparecem no diretório para permitir solicitações 
 
 ## Próxima etapa concreta
 
-Verificar os workflows desta branch e testar o APK em um aparelho. Depois, configurar Auth com a URL real, resolver os testes de e-mail e concluir os recursos pendentes antes de aprovar produção. O pacote atual pode ser instalado como versão de avaliação, sem depender de um servidor particular continuamente ligado.
+Configurar Auth com a URL pública verificada, resolver os testes de e-mail e testar o APK em um aparelho. Concluir os recursos pendentes antes de aprovar produção. O pacote atual pode ser instalado como versão de avaliação, sem depender de um servidor particular continuamente ligado.

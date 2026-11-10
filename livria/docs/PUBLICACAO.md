@@ -1,7 +1,9 @@
 # Publicação da prévia LIVRIA
 
-Em 10/11/2026, o proprietário autorizou a primeira publicação pública no GitHub Pages em `/livria/`, preservando a página existente `amor.html`.
+O proprietário autorizou a primeira publicação pública em 10/11/2026. A versão de avaliação 0.1.0 foi publicada e verificada em https://megadev13.github.io/asdas/livria/.
 
-A branch `livria/publicacao` contém a versão de avaliação 0.1.0. O fluxo de publicação executa os testes e a compilação e inclui `amor.html` no artefato do site.
-
-A configuração final de e-mail de autenticação e a validação do APK em aparelho Android permanecem pendentes, conforme `STATUS.md`.
+- Fonte publicada: `3c7f6ba245685cf2ac581da56ed36bc7cb91faeb`, branch `livria/publicacao`.
+- GitHub Actions: https://github.com/MegaDev13/asdas/actions/runs/42860422485, tentativa 2, sucesso; 11 testes aprovados e build concluído.
+- Página anterior verificada: https://megadev13.github.io/asdas/amor.html. Seu conteúdo e a branch `main` permanecem inalterados.
+- Pages utiliza GitHub Actions. O ambiente permite especificamente `main` e `livria/publicacao`.
+- Autenticação por e-mail e teste do APK em aparelho Android continuam pendentes; consulte `STATUS.md`.
