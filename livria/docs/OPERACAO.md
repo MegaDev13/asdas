@@ -76,7 +76,7 @@ O exemplo de workflow de release, dentro de `livria/.github/workflows`, permite 
 
 ## Pages e aprovação de publicação
 
-O workflow `Publish GitHub Pages (approved)` é manual nesta primeira versão. Ele exige `approve_publication=true`, compila com a base correta do repositório e utiliza a implantação oficial do GitHub Pages. Configure Settings → Pages → Source → GitHub Actions. A disponibilidade de Pages em repositórios privados depende do plano GitHub; não mude a visibilidade do código sem decisão do proprietário.
+O workflow ativo `.github/workflows/livria-pages.yml`, na raiz do repositório, publica somente a partir da branch `livria/publicacao`. Essa branch ainda não foi criada: a primeira publicação pública depende de aprovação explícita do proprietário. O workflow reúne a LIVRIA no caminho `/livria/` e preserva `amor.html` na raiz. A configuração de Pages e eventuais restrições do ambiente também precisam permitir a publicação por Actions. O exemplo standalone `Publish GitHub Pages (approved)`, dentro de `livria/.github/workflows`, é manual. Ele exige `approve_publication=true`, compila com a base correta do repositório e utiliza a implantação oficial do GitHub Pages. Configure Settings → Pages → Source → GitHub Actions. A disponibilidade de Pages em repositórios privados depende do plano GitHub; não mude a visibilidade do código sem decisão do proprietário.
 
 Ao adaptar Pages para este repositório, a LIVRIA deve ocupar um caminho próprio e preservar os arquivos do site anterior. A primeira publicação exige aprovação específica; não se deve trocar o conteúdo do site existente automaticamente. Não houve primeira publicação nesta execução, conforme a restrição do prompt mestre. Uma eventual URL deve ser obtida do resultado real do workflow, nunca presumida.
 
@@ -97,3 +97,12 @@ Para recuperar, use um projeto separado, restaure esquema e dados, replique os o
 `npm test` executa os testes unitários. `tests/live.mjs` e `tests/extended.mjs` usam três contas descartáveis reais em um projeto de QA; não estão habilitados no CI público por padrão. O arquivo de credenciais é fornecido por `LIVRIA_QA_FILE` e precisa permanecer fora do Git.
 
 Os testes reais enviam arquivos e mensagens, verificam RLS e podem excluir as contas e seus conteúdos. O relatório preserva somente nomes, resultados e horários, sem senhas ou tokens. A confirmação de instalação e os testes nativos em Android exigem aparelho ou emulador e continuam pendentes.
+
+## Execuções verificadas
+
+- Web: https://github.com/MegaDev13/asdas/actions/runs/42841261827 — sucesso.
+- Android: https://github.com/MegaDev13/asdas/actions/runs/42841261449 — sucesso.
+- Fonte testada: `6e8a681f2240082c1b502015027b150b2a0c9723`.
+- APK obtido do artefato `LIVRIA-Android-2`, assinatura v2 verificada e SHA-256 registrado em `GITHUB-ACTIONS.json`.
+
+A compilação Android foi corrigida para `setup-android@v4`, sem o pacote descontinuado `tools`. O código do app continua na versão 0.1.0.

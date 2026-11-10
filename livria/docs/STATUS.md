@@ -2,6 +2,12 @@
 
 Data: 10 de novembro de 2026. Esta entrega é uma primeira implementação funcional. **Ainda não atende a todos os itens do prompt mestre e não é uma versão de produção concluída.**
 
+## Atualização GitHub — 10/11/2026
+
+A fonte foi enviada à branch `livria/desenvolvimento` de `MegaDev13/asdas`. O workflow Web e o workflow Android passaram no commit `6e8a681f2240082c1b502015027b150b2a0c9723`. O APK do Actions foi baixado, teve a assinatura e SHA-256 conferidos e contém os mesmos 32 arquivos do artefato Web. Instalação física continua pendente. Os identificadores e links dos runs estão em `GITHUB-ACTIONS.json`; `BUILD.json` registra a compilação local anterior.
+
+O primeiro run Android falhou porque `setup-android@v3` solicitava o pacote removido `tools`. Os workflows foram corrigidos para a versão atual, com `platform-tools` explícito, e o novo run passou.
+
 ## Implementado
 
 | Área | Implementação nesta versão |
@@ -66,9 +72,9 @@ Data: 10 de novembro de 2026. Esta entrega é uma primeira implementação funci
 | Projeto RPG anterior | Preservado; não recebeu migrações nem alterações |
 | GitHub MegaDev13 | Conectado para consultar/trabalhar em repositórios existentes |
 | Repositório LIVRIA | Fonte isolada em `MegaDev13/asdas`, pasta `livria/`, branch `livria/desenvolvimento`, conforme autorização posterior |
-| Push e execução dos workflows | Preparados nesta branch; consultar os resultados reais do GitHub Actions |
+| Push e execução dos workflows | Concluídos: Web e Android passaram; evidências em `GITHUB-ACTIONS.json` |
 | GitHub Pages público | Não publicado; primeira publicação depende da aprovação pedida no prompt mestre |
-| APK | Compilado localmente como debug, sem alegar execução de GitHub Actions |
+| APK | Compilado no GitHub Actions, assinatura e artefatos baixados verificados; continua como debug de avaliação |
 | Assinatura de produção | Pipeline preparado; faltam chave estável e Secrets do proprietário |
 | E-mail de confirmação/recuperação | Código preparado; falta URL final de Auth e teste real de entrega/retorno |
 | Proteção contra senhas vazadas | Uma consulta intermediária sinalizou a configuração; a auditoria final retornou lista vazia. Conferir no painel antes de produção |

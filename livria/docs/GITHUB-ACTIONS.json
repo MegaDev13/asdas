@@ -1,0 +1,27 @@
+{
+  "repository": "MegaDev13/asdas",
+  "branch": "livria/desenvolvimento",
+  "tested_commit": "6e8a681f2240082c1b502015027b150b2a0c9723",
+  "android": {
+    "run_id": 42841261449,
+    "url": "https://github.com/MegaDev13/asdas/actions/runs/42841261449",
+    "conclusion": "success",
+    "artifact_id": 13775382512,
+    "apk_sha256": "aa02305131797686b0d267cbfe72491b640cee9450ff1c6d1ebc6b79303bafdb",
+    "apk_bytes": 5063118
+  },
+  "web": {
+    "run_id": 42841261827,
+    "url": "https://github.com/MegaDev13/asdas/actions/runs/42841261827",
+    "conclusion": "success",
+    "artifact_id": 13775782072
+  },
+  "unit_tests_passed": 11,
+  "matching_web_assets": 32,
+  "signature_verified_by_ci": true,
+  "device_installation_tested": false,
+  "pages_deployed": false,
+  "prior_main_head_preserved": "26db153b81beb9e4bc98b081738fe6259272658d",
+  "downloaded_artifacts_verified": true,
+  "apk_signature_verified_locally": true
+}
