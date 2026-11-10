@@ -22,6 +22,7 @@ O escopo foi comparado com **Texto colado(7).txt**, o prompt mestre de 30 seçõ
 | A08 | Média | Troca de documento mantinha trabalho pendente de busca/narração e nem sempre liberava o PDF anterior. | Cancelamento por sequência e destruição do documento na saída; página restaurada limitada ao número de páginas do novo PDF. |
 | A09 | Baixa | Ausência de resultados com gênero/idioma era apresentada como biblioteca recém-aberta. | Mensagem específica para filtros sem resultado, observada na interface. |
 | A10 | Funcional | Faltavam filtros de idioma/domínio público e categorias adequadas às novas obras. | Filtros e categorias Economia, Política e Sociologia disponíveis no catálogo e no envio; interface verificada. |
+| A11 | Baixa | O workflow Android fixava `0.1.0` no nome do APK, mesmo quando o manifesto já continha outra versão. | Nome derivado de `package.json`. O APK compilado foi inspecionado: `com.livria.app`, versão `0.1.1`, código 2; pacote de entrega renomeado e checksum conferido. |
 
 As mudanças preservam o controle de concorrência no backend: conflito com outro dispositivo mantém o rascunho e pede reabertura, sem substituir automaticamente o progresso mais recente do servidor.
 
@@ -29,6 +30,8 @@ As mudanças preservam o controle de concorrência no backend: conflito com outr
 
 - Testes locais: **16 aprovados**. Cinco testes de integração do novo catálogo foram preparados e ignorados sem as credenciais descartáveis; não contam como aprovação.
 - TypeScript, compilação Vite e geração/verificação sintática do service worker: passaram.
+- GitHub Actions Web, Android e Pages passaram no commit `015dee8aa207b67915505d5c92942cc35e65ad61`. O site público mostra 0.1.1; `amor.html` continua acessível.
+- APK: manifesto binário conferido (`com.livria.app`, 0.1.1, código 2), assinatura v2 verificada no pipeline, ZIP íntegro e SHA-256 conferido. Links e hashes em `AUDITORIA-RESULTADOS.json`.
 - `npm audit --omit=dev`: **zero vulnerabilidades reportadas** nesta execução. Isso não equivale a uma auditoria independente de segurança.
 - Banco: nenhuma tabela pública sem RLS; nenhuma função `SECURITY DEFINER` no esquema público. As operações privilegiadas permanecem no esquema privado ou em Edge Functions autenticadas.
 - Auditor Supabase: um aviso de segurança atual, proteção contra senhas vazadas desativada. Performance indicou apenas índices ainda não utilizados; eles foram preservados, pois o acervo está começando.

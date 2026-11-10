@@ -1,3 +1,5 @@
+> Revisão atual: **0.1.1**. [Auditoria e pendências](livria/docs/AUDITORIA-2026-11-10.md) · [Resultados verificados](livria/docs/AUDITORIA-RESULTADOS.json). Os livros pesquisados estão preparados e ainda não foram importados.
+
 # LIVRIA
 
 O projeto LIVRIA está isolado na pasta [`livria/`](livria/) desta branch `livria/desenvolvimento`.

@@ -1,3 +1,5 @@
+> Atualização: revisão pública 0.1.1 verificada em 10/11/2026. Consulte `AUDITORIA-2026-11-10.md` e `AUDITORIA-RESULTADOS.json`. O registro abaixo descreve a primeira publicação.
+
 # Publicação da prévia LIVRIA
 
 O proprietário autorizou a primeira publicação pública em 10/11/2026. A versão de avaliação 0.1.0 foi publicada e verificada em https://megadev13.github.io/asdas/livria/.

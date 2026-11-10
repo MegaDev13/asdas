@@ -1,0 +1,42 @@
+{
+  "version": "0.1.1",
+  "version_code": 2,
+  "application_id": "com.livria.app",
+  "commit": "015dee8aa207b67915505d5c92942cc35e65ad61",
+  "run": "https://github.com/MegaDev13/asdas/actions/runs/42883132793",
+  "apk_sha256": "621200e44f04eb42f11461160eaf7b49d359a484ab6b1c20a3952a17a03a15f0",
+  "signature_v2_verified_in_actions": true,
+  "installed_on_device": false,
+  "audit_date": "2026-11-10",
+  "web_run": "https://github.com/MegaDev13/asdas/actions/runs/42883133000",
+  "pages_run": "https://github.com/MegaDev13/asdas/actions/runs/42883132747",
+  "public_url": "https://megadev13.github.io/asdas/livria/",
+  "unit_tests": {
+    "passed": 16,
+    "skipped": 5,
+    "skip_reason": "Disposable QA credentials not authorized by automatic review"
+  },
+  "production_dependency_vulnerabilities": 0,
+  "database": {
+    "public_tables": 28,
+    "all_rls": true,
+    "books_imported": 0,
+    "audit_accounts_created": 0
+  },
+  "prepared_public_domain_pdfs": 3,
+  "source_blocks_verified": 1495,
+  "temporary_import_function": {
+    "disabled": true,
+    "verify_jwt": true,
+    "unauthenticated_status": 401
+  },
+  "browser_checks": [
+    "new catalog filters visible on public site",
+    "public Settings displays 0.1.1",
+    "existing amor.html still opens",
+    "local PDF: 31 pages",
+    "text mode at page 4",
+    "search capitalista: 18 page matches",
+    "page 12 retained when switching to scroll mode"
+  ]
+}

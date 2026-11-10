@@ -25,7 +25,7 @@ O `verify_jwt=false` dessas funções não significa acesso anônimo: ambas exig
 
 ## Auth e e-mail
 
-Em Authentication → URL Configuration, defina o site real e os URLs de redirecionamento permitidos. Para desenvolvimento, use `http://localhost:5173`. Para GitHub Pages, inclua a origem e o caminho reais do repositório. Configure o retorno de recuperação para a rota `#/nova-senha` e confirme o fluxo com um e-mail sob seu controle.
+Em Authentication → URL Configuration, defina o site real e os URLs de redirecionamento permitidos. Para desenvolvimento, use `http://localhost:5173`. Para GitHub Pages, inclua a origem e o caminho reais do repositório. Na revisão 0.1.1, os retornos usam os parâmetros `?auth=confirm` e `?auth=recovery`, preservando o fragmento para o Supabase. Permita explicitamente `https://megadev13.github.io/asdas/livria/?auth=confirm` e `https://megadev13.github.io/asdas/livria/?auth=recovery`; o cliente encaminha a recuperação para `#/nova-senha` após consumir a sessão. Confirme o fluxo com um e-mail sob seu controle.
 
 A prévia pública está disponível em `https://megadev13.github.io/asdas/livria/`. O Site URL e os redirecionamentos do Auth ainda precisam ser configurados e testados com esse endereço. Nenhum SMTP próprio foi configurado; verifique também as restrições do envio padrão antes de abrir cadastros para outras pessoas. O cadastro depende de confirmação por e-mail conforme a configuração do Auth. Login por senha foi validado com contas temporárias confirmadas; não foi verificada a entrega de e-mails. A integração de retorno de links de e-mail diretamente para o aplicativo Android ainda está pendente. Depois de confirmar o e-mail, o usuário pode voltar ao aplicativo e entrar por senha.
 
