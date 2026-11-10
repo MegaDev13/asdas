@@ -42,6 +42,7 @@ import {
 } from "../lib/offline";
 import { db, result, rows, signedFile, type Row } from "../lib/db";
 import { useAuth } from "../lib/auth";
+import { createProgressSync } from "../lib/progress-sync";
 import {
   activeSeconds,
   downloadJson,
@@ -111,17 +112,19 @@ export default function Reader() {
     searchRun = useRef(0),
     initialScroll = useRef(0),
     scrolled = useRef(false),
-    savedVersion = useRef<string | null>(null),
-    saving = useRef(false),
+    progressSync = useRef<ReturnType<typeof createProgressSync> | null>(null),
     speechQueue = useRef<string[]>([]),
     speechIndex = useRef(0);
   pageRef.current = page;
   modeRef.current = mode;
   docRef.current = doc;
-  async function loadPdf(source: string | Uint8Array) {
+  async function loadPdf(source: string | Uint8Array, restorePage = 1) {
     const seq = ++loadSeq.current;
     setError(null);
+    const oldDocument = docRef.current;
+    docRef.current = null;
     setDoc(null);
+    if (oldDocument) void oldDocument.loadingTask.destroy();
     try {
       const d = await getDocument(
         typeof source === "string" ? { url: source } : { data: source },
@@ -130,8 +133,10 @@ export default function Reader() {
         d.loadingTask.destroy();
         return;
       }
+      setPage(Math.min(d.numPages, Math.max(1, restorePage)));
       setDoc(d);
       const o = await d.getOutline();
+      if (seq !== loadSeq.current) return;
       if (o) {
         const list: Array<{ title: string; page: number }> = [];
         for (const item of o) {
@@ -150,15 +155,16 @@ export default function Reader() {
               });
           } catch {}
         }
-        setOutline(list);
+        if (seq === loadSeq.current) setOutline(list);
       } else setOutline([]);
     } catch (e) {
-      setError(e);
+      if (seq === loadSeq.current) setError(e);
     }
   }
   useEffect(() => {
     let alive = true;
     ready.current = false;
+    progressSync.current = null;
     scrolled.current = false;
     setDoc(null);
     setBook(null);
@@ -207,7 +213,6 @@ export default function Reader() {
         setPage(restore?.page || 1);
         setMode(restore?.mode || "paged");
         setZoom(restore?.zoom || 1);
-        savedVersion.current = p[0]?.updated_at || null;
         initialScroll.current = restore?.scroll_ratio || 0;
         const queued = await pendingAnnotations(user.id, id!);
         setBookmarks([
@@ -241,7 +246,30 @@ export default function Reader() {
         const u = await signedFile("book-files", b[0].pdf_path);
         if (!alive) return;
         setUrl(u);
-        await loadPdf(u);
+        await loadPdf(u, restore?.page || 1);
+        if (!alive) return;
+        const key = "livria-progress-" + user.id + "-" + id;
+        progressSync.current = createProgressSync({
+          version: p[0]?.updated_at || null,
+          write: async (value) => {
+            const { data } = await db.auth.getSession();
+            if (data.session?.user.id !== user.id)
+              throw Error("Conta alterada.");
+            return result(db.rpc("save_reading_progress", value));
+          },
+          store: (value) => localStorage.setItem(key, JSON.stringify(value)),
+          clear: () => localStorage.removeItem(key),
+          status: (state) => {
+            if (!alive) return;
+            setSync(
+              state === "synced"
+                ? "Progresso sincronizado"
+                : state === "conflict"
+                  ? "Progresso alterado em outro dispositivo. Reabra o livro para usar a posição mais recente."
+                  : "Posição salva neste dispositivo. Sincronize ao reconectar.",
+            );
+          },
+        });
         ready.current = true;
         await db
           .from("user_library")
@@ -255,7 +283,16 @@ export default function Reader() {
     })();
     return () => {
       alive = false;
+      void progressSync.current?.flush();
+      progressSync.current = null;
       loadSeq.current++;
+      searchRun.current++;
+      speechRun.current++;
+      if (Capacitor.isNativePlatform()) void TextToSpeech.stop();
+      else window.speechSynthesis?.cancel();
+      const previous = docRef.current;
+      docRef.current = null;
+      if (previous) void previous.loadingTask.destroy();
     };
   }, [id, user?.id]);
   useEffect(
@@ -268,7 +305,18 @@ export default function Reader() {
     [],
   );
   useEffect(() => {
-    if (doc) void pageText(doc, page).then(setText).catch(setError);
+    let alive = true;
+    if (doc)
+      void pageText(doc, page)
+        .then((value) => {
+          if (alive) setText(value);
+        })
+        .catch((e) => {
+          if (alive) setError(e);
+        });
+    return () => {
+      alive = false;
+    };
   }, [doc, page]);
   const move = useCallback((n: number) => {
     if (!docRef.current) return;
@@ -334,10 +382,15 @@ export default function Reader() {
       events.forEach((e) => window.removeEventListener(e, activity));
     };
   }, [id, user?.id, local]);
-  async function saveProgress() {
-    if (!user || local || !ready.current || !docRef.current || saving.current)
+  function stageProgress() {
+    if (
+      !user ||
+      local ||
+      !ready.current ||
+      !docRef.current ||
+      !progressSync.current
+    )
       return;
-    saving.current = true;
     const el = document.getElementById("pdf-page-" + pageRef.current);
     const top = el?.getBoundingClientRect();
     const ratio =
@@ -350,38 +403,44 @@ export default function Reader() {
       mode: modeRef.current,
       zoom,
       scroll_ratio: ratio,
-      expected_updated_at: savedVersion.current,
     };
-    localStorage.setItem(
-      "livria-progress-" + user.id + "-" + id,
-      JSON.stringify(value),
-    );
-    try {
-      const { data, error } = await db.rpc("save_reading_progress", value);
-      if (error) throw error;
-      if (!data) {
-        setSync(
-          "Progresso alterado em outro dispositivo. Reabra o livro para usar a posição mais recente.",
-        );
-      } else {
-        savedVersion.current = data.updated_at;
-        localStorage.removeItem("livria-progress-" + user.id + "-" + id);
-        setSync("Progresso sincronizado");
-      }
-    } catch {
-      setSync("Posição salva neste dispositivo. Sincronize ao reconectar.");
-    } finally {
-      saving.current = false;
-    }
+    progressSync.current.stage({ ...value, book_id: id! });
+  }
+  async function saveProgress() {
+    stageProgress();
+    await progressSync.current?.flush();
   }
   useEffect(() => {
     if (!ready.current || !doc) return;
+    stageProgress();
     if (progressTimer.current) clearTimeout(progressTimer.current);
     progressTimer.current = setTimeout(() => void saveProgress(), 1200);
     return () => {
       if (progressTimer.current) clearTimeout(progressTimer.current);
     };
   }, [page, mode, zoom, doc]);
+  useEffect(() => {
+    if (!doc || local) return;
+    let timer: ReturnType<typeof setTimeout> | undefined;
+    const scroll = () => {
+      if (modeRef.current !== "scroll") return;
+      if (timer) clearTimeout(timer);
+      timer = setTimeout(() => {
+        stageProgress();
+        void progressSync.current?.flush();
+      }, 1200);
+    };
+    window.addEventListener("scroll", scroll, { passive: true });
+    const leave = () => {
+      void saveProgress();
+    };
+    window.addEventListener("pagehide", leave);
+    return () => {
+      if (timer) clearTimeout(timer);
+      window.removeEventListener("scroll", scroll);
+      window.removeEventListener("pagehide", leave);
+    };
+  }, [doc, zoom, id, user?.id, local]);
   useEffect(() => {
     const save = () => {
       void saveProgress();

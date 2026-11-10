@@ -1,0 +1,75 @@
+{
+  "status": "prepared_not_imported",
+  "reviewed_at": "2026-11-10",
+  "books": [
+    {
+      "key": "dissolucao",
+      "gutenberg": 24701,
+      "title": "A dissolução do regimen capitalista",
+      "author": "Teixeira Bastos",
+      "death_year": 1902,
+      "year": 1897,
+      "synopsis": "Ensaio histórico sobre concentração do capital, condições de trabalho e transformações do capitalismo industrial. Texto original em português, com a ortografia histórica preservada.",
+      "source_url": "https://www.gutenberg.org/cache/epub/24701/pg24701-images.html",
+      "catalog_url": "https://www.gutenberg.org/ebooks/24701",
+      "source_sha256": "66e118aac6427d40348617373fc1822cac3af42209660ae67259c5ce5bc567bf",
+      "pdf_sha256": "9724b5afae02031b557ae30a01661fc1766a27b758f9fa2a5cbfdb6a54f470e6",
+      "pages": 31,
+      "bytes": 129306,
+      "filename": "dissolucao.pdf",
+      "source_blocks": 236,
+      "source_blocks_verified": 236,
+      "brazil_public_domain_since": "1973-01-01",
+      "license_details": "Domínio público no Brasil: autor falecido em 1902, prazo do art. 41 da Lei 9.610/1998 encerrado. Obra original em português (1897), sem tradução moderna. Transcrição: https://www.gutenberg.org/ebooks/24701. Ortografia histórica e créditos preservados; composição PDF LIVRIA, não fac-símile. Licença de distribuição da transcrição incluída integralmente no PDF: https://www.gutenberg.org/policy/license.html."
+    },
+    {
+      "key": "primeiro-maio",
+      "gutenberg": 32379,
+      "title": "O Primeiro de Maio",
+      "author": "Sebastião de Magalhães Lima",
+      "death_year": 1928,
+      "year": 1894,
+      "synopsis": "Reflexão sobre o movimento operário, a jornada de oito horas e o significado do Primeiro de Maio no debate socialista europeu. Texto histórico em português.",
+      "source_url": "https://www.gutenberg.org/cache/epub/32379/pg32379-images.html",
+      "catalog_url": "https://www.gutenberg.org/ebooks/32379",
+      "source_sha256": "1e55ff0d4ad2641e0c5fcad57bb4ecd0b163dcea76e208efa2bab7c5a91b007f",
+      "pdf_sha256": "8e44fe20d896f9702fafe586a6c090f4191bd2507286eaf27fbb7f16d9934c30",
+      "pages": 106,
+      "bytes": 320700,
+      "filename": "primeiro-maio.pdf",
+      "source_blocks": 1112,
+      "source_blocks_verified": 1112,
+      "brazil_public_domain_since": "1999-01-01",
+      "license_details": "Domínio público no Brasil: autor falecido em 1928, prazo do art. 41 da Lei 9.610/1998 encerrado. Obra original em português (1894), sem tradução moderna. Transcrição: https://www.gutenberg.org/ebooks/32379. Ortografia histórica e créditos preservados; composição PDF LIVRIA, não fac-símile. Licença de distribuição da transcrição incluída integralmente no PDF: https://www.gutenberg.org/policy/license.html."
+    },
+    {
+      "key": "credito-agricola",
+      "gutenberg": 24412,
+      "title": "O crédito agrícola em Portugal",
+      "author": "Jaime de Magalhães Lima",
+      "death_year": 1936,
+      "year": 1899,
+      "synopsis": "Conferência sobre crédito, capital e financiamento da agricultura em Portugal, incluindo instituições de poupança, organização econômica e acesso dos produtores a recursos. Ortografia histórica preservada.",
+      "source_url": "https://www.gutenberg.org/cache/epub/24412/pg24412-images.html",
+      "catalog_url": "https://www.gutenberg.org/ebooks/24412",
+      "source_sha256": "2ce6654afab1ec079341fc95414ddcd62c897e329404bcd2f038123510787c39",
+      "pdf_sha256": "50dcd91703a64838ff3939aa8a22d63edb002b924a659df33cfd8dd0cbba3e59",
+      "pages": 21,
+      "bytes": 100712,
+      "filename": "credito-agricola.pdf",
+      "source_blocks": 147,
+      "source_blocks_verified": 147,
+      "brazil_public_domain_since": "2007-01-01",
+      "license_details": "Domínio público no Brasil: autor falecido em 1936, prazo do art. 41 da Lei 9.610/1998 encerrado. Obra original em português (1899), sem tradução moderna. Transcrição: https://www.gutenberg.org/ebooks/24412. Ortografia histórica e créditos preservados; composição PDF LIVRIA, não fac-símile. Licença de distribuição da transcrição incluída integralmente no PDF: https://www.gutenberg.org/policy/license.html."
+    }
+  ],
+  "excluded": [
+    {
+      "title": "O Capital",
+      "author": "Karl Marx",
+      "edition": "Edições Progresso-Editorial Avante!, 1990",
+      "reason": "A fonte declara direitos reservados de tradução. Transcrição autorizada ao MIA não comprova autorização de republicação na LIVRIA.",
+      "source": "https://www.marxists.org/portugues/marx/1867/capital/index.htm"
+    }
+  ]
+}

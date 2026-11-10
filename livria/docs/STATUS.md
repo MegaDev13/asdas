@@ -1,3 +1,5 @@
+> Atualização: a revisão 0.1.1 e os resultados atuais estão em [AUDITORIA-2026-11-10.md](AUDITORIA-2026-11-10.md). Os resultados abaixo registram a avaliação 0.1.0, preservada como histórico.
+
 # Entrega de avaliação — LIVRIA 0.1.0
 
 Data: 10 de novembro de 2026. Esta entrega é uma primeira implementação funcional. **Ainda não atende a todos os itens do prompt mestre e não é uma versão de produção concluída.**

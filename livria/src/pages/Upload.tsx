@@ -5,6 +5,7 @@ import { useAuth } from "../lib/auth";
 import { db, result, uploadFile } from "../lib/db";
 import { MAX_PDF_BYTES } from "../lib/config";
 import { validPdfHeader } from "../lib/utils";
+import { BOOK_CATEGORIES } from "../lib/catalog";
 import { Gate, Heading, ErrorBox } from "../components/ui";
 export default function Upload() {
   const { user } = useAuth();
@@ -45,23 +46,21 @@ export default function Upload() {
           .data.publicUrl;
       }
       await result(
-        db
-          .from("books")
-          .insert({
-            id,
-            owner_id: user!.id,
-            pdf_path: path,
-            title: form.get("title"),
-            author: form.get("author"),
-            synopsis: form.get("synopsis"),
-            category: form.get("category"),
-            language: form.get("language"),
-            license: form.get("license"),
-            license_details: form.get("license_details"),
-            visibility: form.get("visibility"),
-            allow_download: form.get("download") === "on",
-            cover_url,
-          }),
+        db.from("books").insert({
+          id,
+          owner_id: user!.id,
+          pdf_path: path,
+          title: form.get("title"),
+          author: form.get("author"),
+          synopsis: form.get("synopsis"),
+          category: form.get("category"),
+          language: form.get("language"),
+          license: form.get("license"),
+          license_details: form.get("license_details"),
+          visibility: form.get("visibility"),
+          allow_download: form.get("download") === "on",
+          cover_url,
+        }),
       );
       setMessage("Enviando seu livro…");
       await uploadFile(
@@ -121,16 +120,7 @@ export default function Upload() {
           <label>
             Gênero
             <select name="category">
-              {[
-                "Literatura",
-                "Romance",
-                "Fantasia",
-                "Ficção científica",
-                "Não ficção",
-                "Poesia",
-                "Terror",
-                "História",
-              ].map((x) => (
+              {BOOK_CATEGORIES.filter((x) => x !== "Todos").map((x) => (
                 <option key={x}>{x}</option>
               ))}
             </select>

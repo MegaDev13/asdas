@@ -3,6 +3,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { BookOpen, ArrowRight, Mail, Lock } from "lucide-react";
 import { db } from "../lib/db";
 import { ErrorBox } from "../components/ui";
+import { authRedirect } from "../lib/auth-return";
 export default function Auth({
   mode = "login",
 }: {
@@ -26,7 +27,10 @@ export default function Auth({
         const { data, error } = await db.auth.signUp({
           email,
           password,
-          options: { emailRedirectTo: redirect, data: { display_name: name } },
+          options: {
+            emailRedirectTo: authRedirect(redirect, "confirm"),
+            data: { display_name: name },
+          },
         });
         if (error) throw error;
         if (data.session) {
@@ -42,7 +46,7 @@ export default function Auth({
           );
       } else if (mode === "recover") {
         const { error } = await db.auth.resetPasswordForEmail(email, {
-          redirectTo: redirect + "#/nova-senha",
+          redirectTo: authRedirect(redirect, "recovery"),
         });
         if (error) throw error;
         setMessage(

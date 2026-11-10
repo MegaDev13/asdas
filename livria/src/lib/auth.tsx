@@ -9,6 +9,8 @@ import {
 import type { User } from "@supabase/supabase-js";
 import { useQueryClient } from "@tanstack/react-query";
 import { db, result, type Row } from "./db";
+import { useNavigate } from "react-router-dom";
+import { isRecoveryReturn } from "./auth-return";
 type Auth = {
   user: User | null;
   profile: Row | null;
@@ -22,6 +24,7 @@ const Context = createContext<Auth>({
   refresh: async () => {},
 });
 export function AuthProvider({ children }: { children: ReactNode }) {
+  const navigate = useNavigate();
   const queries = useQueryClient();
   const sequence = useRef(0);
   const previousUser = useRef<string | null | undefined>(undefined);
@@ -44,11 +47,34 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     setLoading(false);
   }
   useEffect(() => {
-    db.auth.getSession().then(({ data }) => load(data.session?.user || null));
-    const { data } = db.auth.onAuthStateChange((_event, s) => {
-      setTimeout(() => void load(s?.user || null), 0);
+    let alive = true;
+    const recovery = isRecoveryReturn(window.location.href);
+    const showRecovery = () => {
+      const url = new URL(window.location.href);
+      url.searchParams.delete("auth");
+      window.history.replaceState(
+        window.history.state,
+        "",
+        url.pathname + url.search + url.hash,
+      );
+      navigate("/nova-senha", { replace: true });
+    };
+    db.auth.getSession().then(({ data }) => {
+      if (!alive) return;
+      void load(data.session?.user || null);
+      if (data.session && recovery) showRecovery();
     });
-    return () => data.subscription.unsubscribe();
+    const { data } = db.auth.onAuthStateChange((event, s) => {
+      setTimeout(() => {
+        if (!alive) return;
+        void load(s?.user || null);
+        if (event === "PASSWORD_RECOVERY") showRecovery();
+      }, 0);
+    });
+    return () => {
+      alive = false;
+      data.subscription.unsubscribe();
+    };
   }, []);
   return (
     <Context.Provider

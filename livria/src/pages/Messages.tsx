@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { Link, useParams } from "react-router-dom";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { mergeMessages } from "../lib/messages";
 import {
   MessagesSquare,
   Send,
@@ -25,6 +26,26 @@ import {
 export default function Messages() {
   const { id } = useParams(),
     { user } = useAuth();
+  const queryClient = useQueryClient();
+  useEffect(() => {
+    if (!user) return;
+    const channel = db
+      .channel("dm-list-" + user.id)
+      .on(
+        "postgres_changes",
+        { event: "*", schema: "public", table: "messages" },
+        () => {
+          void queryClient.invalidateQueries({
+            queryKey: ["conversation-summaries"],
+          });
+          void queryClient.invalidateQueries({ queryKey: ["conversations"] });
+        },
+      )
+      .subscribe();
+    return () => {
+      void db.removeChannel(channel);
+    };
+  }, [user?.id, queryClient]);
   const summaries = useQuery({
     queryKey: ["conversation-summaries", user?.id],
     enabled: !!user,
@@ -102,6 +123,8 @@ export default function Messages() {
 }
 export function Chat({ conversationId }: { conversationId: string }) {
   const { user, profile } = useAuth();
+  const qc = useQueryClient();
+  const loaded = useRef(false);
   const [typing, setTyping] = useState("");
   const typingChannel = useRef<any>(null);
   const typingTimeout = useRef<ReturnType<typeof setTimeout> | null>(null);
@@ -142,10 +165,9 @@ export function Chat({ conversationId }: { conversationId: string }) {
         .limit(40);
       if (before) q = q.lt("created_at", before);
       const data = await result(q);
-      setMore(data.length === 40);
-      setMessages((old) =>
-        before ? [...data.reverse(), ...old] : data.reverse(),
-      );
+      if (before || !loaded.current) setMore(data.length === 40);
+      loaded.current = true;
+      setMessages((old) => mergeMessages(old, data));
       if (!before)
         setTimeout(
           () => bottom.current?.scrollIntoView({ block: "nearest" }),
@@ -156,6 +178,7 @@ export function Chat({ conversationId }: { conversationId: string }) {
         .update({ last_read_at: new Date().toISOString() })
         .eq("conversation_id", conversationId)
         .eq("user_id", user!.id);
+      void qc.invalidateQueries({ queryKey: ["conversation-summaries"] });
     } catch (e) {
       setError(e);
     } finally {
@@ -174,7 +197,22 @@ export function Chat({ conversationId }: { conversationId: string }) {
           table: "messages",
           filter: "conversation_id=eq." + conversationId,
         },
-        () => void fetchMessages(),
+        (payload) => {
+          if (payload.eventType === "DELETE") {
+            setMessages((old) => old.filter((m) => m.id !== payload.old.id));
+            void qc.invalidateQueries({ queryKey: ["conversation-summaries"] });
+          } else if (payload.eventType === "UPDATE") {
+            void result(
+              db
+                .from("messages")
+                .select("*,profiles(display_name,avatar_url)")
+                .eq("id", payload.new.id)
+                .single(),
+            )
+              .then((row) => setMessages((old) => mergeMessages(old, [row])))
+              .catch(setError);
+          } else void fetchMessages();
+        },
       )
       .subscribe((status) => {
         if (status === "CHANNEL_ERROR")
@@ -209,14 +247,12 @@ export function Chat({ conversationId }: { conversationId: string }) {
         await uploadFile("message-attachments", attachment_path, attachment);
       }
       await result(
-        db
-          .from("messages")
-          .insert({
-            conversation_id: conversationId,
-            user_id: user!.id,
-            body: body.trim() || "Imagem",
-            attachment_path,
-          }),
+        db.from("messages").insert({
+          conversation_id: conversationId,
+          user_id: user!.id,
+          body: body.trim() || "Imagem",
+          attachment_path,
+        }),
       );
       setBody("");
       setAttachment(null);
@@ -348,14 +384,12 @@ export function Chat({ conversationId }: { conversationId: string }) {
                           if (reason)
                             try {
                               await result(
-                                db
-                                  .from("reports")
-                                  .insert({
-                                    user_id: user!.id,
-                                    target_type: "message",
-                                    target_id: m.id,
-                                    reason,
-                                  }),
+                                db.from("reports").insert({
+                                  user_id: user!.id,
+                                  target_type: "message",
+                                  target_id: m.id,
+                                  reason,
+                                }),
                               );
                               alert("Denúncia recebida.");
                             } catch (e) {

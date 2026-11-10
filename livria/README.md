@@ -1,3 +1,5 @@
+> Revisão 0.1.1: consulte [a auditoria e as pendências](docs/AUDITORIA-2026-11-10.md). Três obras em português foram preparadas com direitos documentados; a importação ainda aguarda a autorização operacional descrita no relatório.
+
 # LIVRIA 0.1.0
 
 Biblioteca comunitária e rede social literária em português, com frontend React/TypeScript/Vite compartilhado com Android por Capacitor. Backend exclusivo Supabase, separado do projeto RPG existente.

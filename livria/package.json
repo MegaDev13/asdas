@@ -1,7 +1,7 @@
 {
   "name": "livria",
-  "version": "0.1.0",
-  "description": "Biblioteca comunit\u00e1ria e rede social liter\u00e1ria",
+  "version": "0.1.1",
+  "description": "Biblioteca comunitária e rede social literária",
   "main": "index.js",
   "directories": {
     "doc": "docs",

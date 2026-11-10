@@ -12,30 +12,44 @@ import {
   SlidersHorizontal,
   Sparkles,
 } from "lucide-react";
-import { db, rows } from "../lib/db";
+import { rows, result } from "../lib/db";
+import { BOOK_CATEGORIES, catalogRequest } from "../lib/catalog";
 import { useAuth } from "../lib/auth";
-import { percent, safeSearch } from "../lib/utils";
+import { percent } from "../lib/utils";
 import { Empty, Loading, ErrorBox, Gate, Heading } from "../components/ui";
 import BookCard from "../components/BookCard";
-const categories = [
-  "Todos",
-  "Literatura",
-  "Romance",
-  "Fantasia",
-  "Ficção científica",
-  "Não ficção",
-  "Poesia",
-  "Terror",
-  "História",
-];
 export default function Catalog({ personal = false }: { personal?: boolean }) {
   const { user, profile } = useAuth();
   const [params, setParams] = useSearchParams(),
     [category, setCategory] = useState("Todos"),
     [shelf, setShelf] = useState("all"),
-    [page, setPage] = useState(0),
-    [sort, setSort] = useState("recent");
+    [pagination, setPagination] = useState({ scope: "", page: 0 }),
+    [sort, setSort] = useState("recent"),
+    [language, setLanguage] = useState(""),
+    [publicDomain, setPublicDomain] = useState(false);
   const query = params.get("q") || "";
+  const filtered =
+    !!query.trim() ||
+    category !== "Todos" ||
+    !!language ||
+    publicDomain ||
+    (personal && shelf !== "all");
+  const scope = JSON.stringify([
+    personal,
+    user?.id,
+    query,
+    category,
+    shelf,
+    sort,
+    language,
+    publicDomain,
+  ]);
+  const page = pagination.scope === scope ? pagination.page : 0;
+  const setPage = (value: number | ((page: number) => number)) =>
+    setPagination({
+      scope,
+      page: typeof value === "function" ? value(page) : value,
+    });
   const books = useQuery({
     queryKey: [
       "catalog",
@@ -46,37 +60,24 @@ export default function Catalog({ personal = false }: { personal?: boolean }) {
       shelf,
       page,
       sort,
+      language,
+      publicDomain,
     ],
     enabled: !personal || !!user,
-    queryFn: async () => {
-      if (personal) {
-        const library = await rows("user_library", (q) =>
-          q.eq("user_id", user!.id),
-        );
-        const ids = library
-          .filter(
-            (x) =>
-              shelf === "all" ||
-              (shelf === "favorites" ? x.favorite : x.shelf === shelf),
-          )
-          .map((x) => x.book_id);
-        if (!ids.length) return [];
-        return rows("books", (q) =>
-          q.in("id", ids).order("created_at", { ascending: false }),
-        );
-      }
-      return rows("books", (q) => {
-        q = q.eq("status", "approved").eq("visibility", "community");
-        const s = safeSearch(query);
-        if (s) q = q.or(`title.ilike.%${s}%,author.ilike.%${s}%`);
-        if (category !== "Todos") q = q.eq("category", category);
-        return q
-          .order(sort === "title" ? "title" : "created_at", {
-            ascending: sort === "title",
-          })
-          .range(page * 24, page * 24 + 23);
-      });
-    },
+    queryFn: () =>
+      result(
+        catalogRequest({
+          personal,
+          userId: user?.id,
+          query,
+          category,
+          shelf,
+          page,
+          sort,
+          language,
+          publicDomain,
+        }),
+      ),
   });
   const progress = useQuery({
     queryKey: ["progress", user?.id],
@@ -260,7 +261,7 @@ export default function Catalog({ personal = false }: { personal?: boolean }) {
                 ["abandoned", "Abandonados"],
                 ["favorites", "Favoritos"],
               ]
-            : categories.map((c) => [c, c])
+            : BOOK_CATEGORIES.map((c) => [c, c])
           ).map(([key, label]) => (
             <button
               className={(personal ? shelf : category) === key ? "active" : ""}
@@ -273,6 +274,30 @@ export default function Catalog({ personal = false }: { personal?: boolean }) {
               {label}
             </button>
           ))}
+        </div>
+        <div className="button-row catalog-options">
+          <label>
+            Idioma
+            <select
+              aria-label="Filtrar por idioma"
+              value={language}
+              onChange={(e) => setLanguage(e.target.value)}
+            >
+              <option value="">Todos os idiomas</option>
+              <option value="pt-BR">Português do Brasil</option>
+              <option value="pt-PT">Português de Portugal</option>
+              <option value="en">Inglês</option>
+              <option value="es">Espanhol</option>
+            </select>
+          </label>
+          <label className="checkbox">
+            <input
+              type="checkbox"
+              checked={publicDomain}
+              onChange={(e) => setPublicDomain(e.target.checked)}
+            />
+            Somente domínio público
+          </label>
         </div>
         <form className="catalog-search" onSubmit={(e) => e.preventDefault()}>
           <Search size={18} />
@@ -311,8 +336,8 @@ export default function Catalog({ personal = false }: { personal?: boolean }) {
           !books.error && (
             <Empty
               title={
-                query
-                  ? "Nenhuma história encontrada"
+                filtered
+                  ? "Nenhuma história encontrada nesses filtros"
                   : personal
                     ? "Sua estante está esperando pela primeira história"
                     : "Vamos escrever o primeiro capítulo?"
@@ -327,15 +352,15 @@ export default function Catalog({ personal = false }: { personal?: boolean }) {
                 </Link>
               }
             >
-              {query
-                ? "Experimente outro título, autor ou gênero."
+              {filtered
+                ? "Experimente outro título, autor, gênero ou idioma."
                 : personal
                   ? "Adicione um livro à sua estante para acompanhar a leitura."
                   : "A biblioteca acaba de abrir. Compartilhe uma obra de sua autoria, em domínio público ou com autorização."}
             </Empty>
           )
         )}
-        {!personal && (
+        {
           <div className="pagination">
             <button disabled={page === 0} onClick={() => setPage((p) => p - 1)}>
               Anterior
@@ -348,7 +373,7 @@ export default function Catalog({ personal = false }: { personal?: boolean }) {
               Próxima
             </button>
           </div>
-        )}
+        }
       </section>
       <div className="editorial-note">
         <span>“</span>
